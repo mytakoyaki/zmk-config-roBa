@@ -70,6 +70,14 @@
     keymap {
         compatible = "zmk,keymap";
 
+        pointing_device: pointing_device {
+            compatible = "zmk,pointing-device";
+            pointing-stick;
+            report-rate = <100>; // レポートレートを適宜設定
+            pointing-stick-speed = <200>; // スピード設定
+            pointing-stick-deadzone = <10>; // デッドゾーン設定
+        };
+
         default_layer {
             bindings = <
 &kp Q          &kp L         &kp U         &kp COMMA             &kp PERIOD                                                       &kp F                 &kp W  &kp R  &kp Y  &kp P
