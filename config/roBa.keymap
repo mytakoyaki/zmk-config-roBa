@@ -64,17 +64,20 @@
             tapping-term-ms = <200>;
         };
 
+        
         /* 速度調整用ビヘイビア：トラックボール（ポインタ）速度の増減 */
         inc_pointer_speed: inc_pointer_speed {
             compatible = "zmk,behavior-inc-dec";
             label = "Increase Pointer Speed";
             binding-param = <100 100 3000 500>;
+            #binding-cells = <0>;
         };
 
         dec_pointer_speed: dec_pointer_speed {
             compatible = "zmk,behavior-inc-dec";
             label = "Decrease Pointer Speed";
             binding-param = <100 100 3000 500>;
+            #binding-cells = <0>;
         };
 
         /* 速度調整用ビヘイビア：スクロール速度の増減 */
@@ -82,12 +85,14 @@
             compatible = "zmk,behavior-inc-dec";
             label = "Increase Scroll Speed";
             binding-param = <100 100 3000 500>;
+            #binding-cells = <0>;
         };
 
         dec_scroll_speed: dec_scroll_speed {
             compatible = "zmk,behavior-inc-dec";
             label = "Decrease Scroll Speed";
             binding-param = <100 100 3000 500>;
+            #binding-cells = <0>;
         };
     };
 
