@@ -10,7 +10,7 @@
     quick-tap-ms = <0>;
 };
 
-/ {
+ / {
     combos {
         compatible = "zmk,combos";
 
@@ -84,6 +84,19 @@
             label = "Decrease Scroll Speed";
             binding-param = <100 100 3000 500>;
         };
+
+        /* 追加：トラックボールスクロール有効用（押している間だけ）ビヘイビア */
+        mo_vertical_scroll: mo_vertical_scroll {
+            compatible = "zmk,behavior-momentary";
+            label = "MOMENTARY_VERTICAL_SCROLL";
+            layer = <5>;  /* VERTICAL_SCROLL レイヤー（6番目のレイヤー） */
+        };
+
+        mo_horizontal_scroll: mo_horizontal_scroll {
+            compatible = "zmk,behavior-momentary";
+            label = "MOMENTARY_HORIZONTAL_SCROLL";
+            layer = <6>;  /* HORIZONTAL_SCROLL レイヤー（7番目のレイヤー） */
+        };
     };
 
     keymap {
@@ -102,7 +115,7 @@
         default_layer {
             bindings = < 
                 &kp Q          &kp L         &kp U         &kp COMMA             &kp PERIOD                                               &kp F        &kp W  &kp R  &kp Y  &kp P
-                &kp E          &kp I         &kp A         &kp O                 &kp MINUS       &trans       &trans       &kp K        &kp T  &kp N  &kp S  &kp H
+                &kp E          &kp I         &kp A         &kp O                 &kp MINUS       &mo_vertical_scroll  &mo_horizontal_scroll  &kp K        &kp T  &kp N  &kp S  &kp H
                 &kt LC(SPACE)  &kp Z         &kp X         &kp C                 &kp V           &trans       &trans       &kp G        &kp D  &kp M  &kp J  &kp B
                 &lt_to_layer_0 5   &lt_to_layer_0 6  &kp LALT  &lt_to_layer_0 2 TAB  &lt_to_layer_0 1 SPACE  &lt_to_layer_0 3 LEFT_ALT   &mt LCTRL BSPC &mt LEFT_SHIFT ENTER    &mkp LCLK
             >;
