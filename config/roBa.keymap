@@ -1,8 +1,5 @@
 / {
     /* 利便性用マクロ（レイヤー切替用） */
-    #define TO_POINTER         &to_layer_0
-    #define TO_SCROLL_VERTICAL &to VERTICAL_SCROLL
-    #define TO_SCROLL_HORIZONTAL &to HORIZONTAL_SCROLL
 };
 
 /* 既存の mt 定義等 */
@@ -11,7 +8,7 @@
     quick-tap-ms = <0>;
 };
 
-/ {
+{
     combos {
         compatible = "zmk,combos";
 
@@ -68,30 +65,31 @@
             tapping-term-ms = <200>;
         };
 
-        /* 以下は「速度変更」用ビヘイビアの例（※実際の動作には対応実装が必要） */
+        /* 速度調整用ビヘイビア（※以下の binding-param の順番は
+           <step_value, min_value, max_value, 初期値> という例です）
+           ポインタもスクロールも 100 刻みで 100～3000 の範囲に設定 */
         inc_pointer_speed: inc_pointer_speed {
             compatible = "zmk,behavior-inc-dec";
             label = "Increase Pointer Speed";
-            /* 例：step=10, min=100, max=400 など（パラメータ名・値は任意） */
-            binding-param = <10>;
+            binding-param = <100 100 3000 500>;
         };
 
         dec_pointer_speed: dec_pointer_speed {
             compatible = "zmk,behavior-inc-dec";
             label = "Decrease Pointer Speed";
-            binding-param = <10>;
+            binding-param = <100 100 3000 500>;
         };
 
         inc_scroll_speed: inc_scroll_speed {
             compatible = "zmk,behavior-inc-dec";
             label = "Increase Scroll Speed";
-            binding-param = <1>;
+            binding-param = <100 100 3000 500>;
         };
 
         dec_scroll_speed: dec_scroll_speed {
             compatible = "zmk,behavior-inc-dec";
             label = "Decrease Scroll Speed";
-            binding-param = <1>;
+            binding-param = <100 100 3000 500>;
         };
     };
 
@@ -103,10 +101,10 @@
             bindings = <
                 &kp Q          &kp L         &kp U         &kp COMMA             &kp PERIOD                                                       &kp F                 &kp W  &kp R  &kp Y  &kp P
                 &kp E          &kp I         &kp A         &kp O                 &kp MINUS        &kp LS(LG(S))                  &kp MINUS        &kp K                 &kp T  &kp N  &kp S  &kp H
-                &kt LC(SPACE)  &kp Z         &kp X         &kp C                 &kp V            &kp COLON                      &kp SEMICOLON    &kp G                 &kp D  &kp M  &kp J  &kp B
+                &kt LC(SPACE)  &kp Z         &kp X         &kp C                 &kp V            &lt_to_layer_0 4               &lt_to_layer_0 5  &kp G                 &kp D  &kp M  &kp J  &kp B
                 &kp LCTRL      &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_0 2 TAB  &mt LCTRL SPACE  &lt_to_layer_0 3 LEFT_ALT      &lt 1 BACKSPACE  &mt LEFT_SHIFT ENTER                       &mkp LCLK
             >;
-            /* 例：ここでセンサ操作により「pointer speed」の微調整を行う（※実際の挙動はファームウェア側で実装） */
+            /* センサ操作による微調整キー（例） */
             sensor-bindings = <&inc_dec_kp PG_UP PAGE_DOWN>;
         };
 
@@ -129,13 +127,13 @@
             >;
         };
 
-        /* FUNCTION レイヤー：例として既存キーに加え，下段右端のキーを SETTINGS レイヤー突入に変更 */
+        /* FUNCTION レイヤー：ここでは速度調整キーを配置 */
         function {
             bindings = <
                 &kp DEL   &kp F7  &kp F8  &kp F9  &kp F10                      &trans  &trans          &msc SCRL_UP    &trans           &trans
                 &kp HOME  &kp F4  &kp F5  &kp F6  &kp F11  &trans      &trans  &trans  &msc SCRL_LEFT  &msc SCRL_DOWN  &msc SCRL_RIGHT  &trans
-                &kp ESC   &kp F1  &kp F2  &kp F3  &kp F12  &trans      &trans  &trans  &trans          &trans          &trans           &trans
-                &trans    &trans  &trans    &trans    &trans   &trans      &trans  &to SETTINGS
+                &kp ESC   &kp F1  &kp F2  &kp F3  &kp F12  &trans      &trans  &trans  &inc_scroll_speed  &inc_pointer_speed   &dec_pointer_speed   &dec_scroll_speed
+                &trans    &trans  &trans    &trans    &trans   &trans      &trans  &trans
             >;
             sensor-bindings = <&inc_dec_kp LC(PAGE_UP) LC(PAGE_DOWN)>;
         };
@@ -150,44 +148,26 @@
             >;
         };
 
-        /* 縦スクロールモード：センサバインディングを MSC(SCRL_UP/DOWN) に変更＋右下キーでデフォルト（ポインタ）へ戻る */
+        /* 縦スクロールモード：センサバインディングを MSC(SCRL_UP/DOWN) に変更 */
         VERTICAL_SCROLL {
             bindings = <
                 &trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans  &trans  &trans
                 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
                 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
-                &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                          &to_layer_0
+                &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                          &trans
             >;
             sensor-bindings = <&inc_dec_kp MSC(SCRL_UP) MSC(SCRL_DOWN)>;
         };
 
-        /* 横スクロールモード：センサバインディングを MSC(SCRL_LEFT/RIGHT) に変更＋右下キーでデフォルトへ戻る */
+        /* 横スクロールモード：センサバインディングを MSC(SCRL_LEFT/RIGHT) に変更 */
         HORIZONTAL_SCROLL {
             bindings = <
                 &trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans  &trans  &trans
                 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
                 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
-                &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                          &to_layer_0
+                &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                          &trans
             >;
             sensor-bindings = <&inc_dec_kp MSC(SCRL_LEFT) MSC(SCRL_RIGHT)>;
-        };
-
-        /* SETTINGS レイヤー：ここでトラックボールのモード切替や速度変更を行う
-           （※以下は例として 1 行目に各機能キー、残りは未使用キーとして &trans を配置） */
-        SETTINGS {
-            bindings = <
-                /* Row0: 左から順に
-                   ①「ポインタモードへ」　②「縦スクロールモードへ」　③「横スクロールモードへ」
-                   ④「ポインタ速度 UP」　⑤「ポインタ速度 DOWN」
-                   ⑥「スクロール速度 UP」　⑦「スクロール速度 DOWN」　⑧「設定終了（デフォルトへ戻す）」
-                */
-                TO_POINTER,  TO_SCROLL_VERTICAL,  TO_SCROLL_HORIZONTAL,
-                inc_pointer_speed, dec_pointer_speed, inc_scroll_speed, dec_scroll_speed, &to_layer_0,
-                /* 以下、残りキーは未割当 */
-                &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans,
-                &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans,
-                &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans
-            >;
         };
 
         /* 既存 layer_6（BT 選択・ブートローダなど） */
