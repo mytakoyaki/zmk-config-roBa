@@ -93,6 +93,14 @@
     keymap {
         compatible = "zmk,keymap";
 
+        pointing_device: pointing_device {
+            compatible = "zmk,pointing-device";
+            pointing-stick;
+            report-rate = <100>; // レポートレートを適宜設定
+            pointing-stick-speed = <200>; // スピード設定
+            pointing-stick-deadzone = <10>; // デッドゾーン設定
+        };
+
         /* ポインタ移動用：デフォルトレイヤー（センサバインディングは例として PG_UP / PAGE_DOWN を利用） */
         default_layer {
             bindings = <
