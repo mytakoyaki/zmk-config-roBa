@@ -39,13 +39,6 @@
             bindings = <&kp EQUAL>;
             key-positions = <24 25>;
         };
-
-        /* （例）設定レイヤー突入用コンボ（任意） */
-        settings {
-            bindings = <&to SETTINGS>;
-            /* 例：普段あまり使わない 2 つのキーを同時押し */
-            key-positions = <2 3>;
-        };
     };
 
     macros {
