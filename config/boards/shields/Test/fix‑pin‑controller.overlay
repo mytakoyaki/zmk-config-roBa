@@ -1,0 +1,12 @@
+
+/dts-v1/;
+/ {
+    pin-controller {
+        spi0_default {
+            #binding-cells = <0>;
+        };
+        spi2_default {
+            #binding-cells = <0>;
+        };
+    };
+};
