@@ -1,6 +1,9 @@
-/ {
-    /* 利便性用マクロ（レイヤー切替用） */
-};
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/pointing.h>
+#include <dt-bindings/zmk/pointing.h>
 
 /* 既存の mt 定義等 */
 &mt {
