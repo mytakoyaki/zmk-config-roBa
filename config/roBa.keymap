@@ -1,14 +1,11 @@
-#include <behaviors.dtsi>
-#include <dt-bindings/zmk/bt.h>
-#include <dt-bindings/zmk/keys.h>
-#include <dt-bindings/zmk/keys.h>
-#include <dt-bindings/zmk/pointing.h>
-#include <dt-bindings/zmk/pointing.h>
+/ {
+    /* 利便性用マクロ（レイヤー切替用） */
+    #define TO_POINTER         &to_layer_0
+    #define TO_SCROLL_VERTICAL &to VERTICAL_SCROLL
+    #define TO_SCROLL_HORIZONTAL &to HORIZONTAL_SCROLL
+};
 
-#define MOUSE 4
-#define SCROLL 5
-#define NUM 6
-
+/* 既存の mt 定義等 */
 &mt {
     flavor = "balanced";
     quick-tap-ms = <0>;
@@ -42,6 +39,13 @@
             bindings = <&kp EQUAL>;
             key-positions = <24 25>;
         };
+
+        /* （例）設定レイヤー突入用コンボ（任意） */
+        settings {
+            bindings = <&to SETTINGS>;
+            /* 例：普段あまり使わない 2 つのキーを同時押し */
+            key-positions = <2 3>;
+        };
     };
 
     macros {
@@ -51,7 +55,6 @@
             bindings =
                 <&to 0 &macro_param_1to1 &kp MACRO_PLACEHOLDER>,
                 <&macro_press>;
-
             label = "TO_LAYER_0";
         };
     };
@@ -61,88 +64,139 @@
             compatible = "zmk,behavior-hold-tap";
             label = "LAYER_TAP_TO_0";
             bindings = <&mo>, <&to_layer_0>;
-
             #binding-cells = <2>;
             tapping-term-ms = <200>;
+        };
+
+        /* 以下は「速度変更」用ビヘイビアの例（※実際の動作には対応実装が必要） */
+        inc_pointer_speed: inc_pointer_speed {
+            compatible = "zmk,behavior-inc-dec";
+            label = "Increase Pointer Speed";
+            /* 例：step=10, min=100, max=400 など（パラメータ名・値は任意） */
+            binding-param = <10>;
+        };
+
+        dec_pointer_speed: dec_pointer_speed {
+            compatible = "zmk,behavior-inc-dec";
+            label = "Decrease Pointer Speed";
+            binding-param = <10>;
+        };
+
+        inc_scroll_speed: inc_scroll_speed {
+            compatible = "zmk,behavior-inc-dec";
+            label = "Increase Scroll Speed";
+            binding-param = <1>;
+        };
+
+        dec_scroll_speed: dec_scroll_speed {
+            compatible = "zmk,behavior-inc-dec";
+            label = "Decrease Scroll Speed";
+            binding-param = <1>;
         };
     };
 
     keymap {
         compatible = "zmk,keymap";
 
-        pointing_device: pointing_device {
-            compatible = "zmk,pointing-device";
-            pointing-stick;
-            report-rate = <100>; // レポートレートを適宜設定
-            pointing-stick-speed = <200>; // スピード設定
-            pointing-stick-deadzone = <10>; // デッドゾーン設定
-        };
-
+        /* ポインタ移動用：デフォルトレイヤー（センサバインディングは例として PG_UP / PAGE_DOWN を利用） */
         default_layer {
             bindings = <
-&kp Q          &kp L         &kp U         &kp COMMA             &kp PERIOD                                                       &kp F                 &kp W  &kp R  &kp Y  &kp P
-&kp E          &kp I         &kp A         &kp O                 &kp MINUS        &kp LS(LG(S))                  &kp MINUS        &kp K                 &kp T  &kp N  &kp S  &kp H
-&kt LC(SPACE)  &kp Z         &kp X         &kp C                 &kp V            &kp COLON                      &kp SEMICOLON    &kp G                 &kp D  &kp M  &kp J  &kp B
-&kp LCTRL      &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_0 2 TAB  &mt LCTRL SPACE  &lt_to_layer_0 3 LEFT_ALT      &lt 1 BACKSPACE  &mt LEFT_SHIFT ENTER                       &mkp LCLK
+                &kp Q          &kp L         &kp U         &kp COMMA             &kp PERIOD                                                       &kp F                 &kp W  &kp R  &kp Y  &kp P
+                &kp E          &kp I         &kp A         &kp O                 &kp MINUS        &kp LS(LG(S))                  &kp MINUS        &kp K                 &kp T  &kp N  &kp S  &kp H
+                &kt LC(SPACE)  &kp Z         &kp X         &kp C                 &kp V            &kp COLON                      &kp SEMICOLON    &kp G                 &kp D  &kp M  &kp J  &kp B
+                &kp LCTRL      &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_0 2 TAB  &mt LCTRL SPACE  &lt_to_layer_0 3 LEFT_ALT      &lt 1 BACKSPACE  &mt LEFT_SHIFT ENTER                       &mkp LCLK
             >;
-
+            /* 例：ここでセンサ操作により「pointer speed」の微調整を行う（※実際の挙動はファームウェア側で実装） */
             sensor-bindings = <&inc_dec_kp PG_UP PAGE_DOWN>;
         };
 
+        /* SIGNAL, NUM は既存定義（省略） */
         signal {
             bindings = <
-&kp C_AC_DESKTOP_SHOW_ALL_WINDOWS  &kp LEFT_PARENTHESIS  &kp DOLLAR     &kp RIGHT_PARENTHESIS  &kp PIPE                            &kp PIPE          &kp ASTERISK  &kp LCTRL    &kp SQT            &kp EXCLAMATION
-&kp AT_SIGN                        &kp LEFT_BRACE        &kp BACKSLASH  &kp RIGHT_BRACE        &kp COLON      &trans      &kp F13  &kp SEMICOLON     &kp EQUAL     &kp SLASH    &kp UNDERSCORE     &kp HASH
-&kp QUESTION                       &kp LEFT_BRACKET      &kp AMPERSAND  &kp RIGHT_BRACKET      &kp LESS_THAN  &trans      &trans   &kp GREATER_THAN  &kp PLUS      &kp PERCENT  &kp DOUBLE_QUOTES  &kp TILDE
-&trans                             &kp LEFT_ALT          &trans         &trans                 &trans         &trans      &trans   &trans                                                          &mkp RCLK
+                &kp C_AC_DESKTOP_SHOW_ALL_WINDOWS  &kp LEFT_PARENTHESIS  &kp DOLLAR     &kp RIGHT_PARENTHESIS  &kp PIPE                            &kp PIPE          &kp ASTERISK  &kp LCTRL    &kp SQT            &kp EXCLAMATION
+                &kp AT_SIGN                        &kp LEFT_BRACE        &kp BACKSLASH  &kp RIGHT_BRACE        &kp COLON      &trans      &kp F13  &kp SEMICOLON     &kp EQUAL     &kp SLASH    &kp UNDERSCORE     &kp HASH
+                &kp QUESTION                       &kp LEFT_BRACKET      &kp AMPERSAND  &kp RIGHT_BRACKET      &kp LESS_THAN  &trans      &trans   &kp GREATER_THAN  &kp PLUS      &kp PERCENT  &kp DOUBLE_QUOTES  &kp TILDE
+                &trans                             &kp LEFT_ALT          &trans         &trans                 &trans         &trans      &trans   &trans                                                          &mkp RCLK
             >;
         };
 
         NUM {
             bindings = <
-&kp PRINTSCREEN  &kp N7        &kp N8        &kp N9        &kp BACKSPACE                                               &trans  &trans          &kp UP_ARROW    &trans           &trans
-&kp N0           &kp NUMBER_4  &kp N5        &kp NUMBER_6  &kp ENTER      &kp LC(LA(KP_NUMBER_0))      &kp UNDERSCORE  &trans  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &trans
-&kp PERIOD       &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &kp TAB        &kp EQUAL                    &trans          &trans  &trans          &trans          &trans           &trans
-&trans           &trans        &trans        &trans        &trans         &trans                       &trans          &trans                                                   &mkp MCLK
+                &kp PRINTSCREEN  &kp N7        &kp N8        &kp N9        &kp BACKSPACE                                               &trans  &trans          &kp UP_ARROW    &trans           &trans
+                &kp N0           &kp NUMBER_4  &kp N5        &kp NUMBER_6  &kp ENTER      &kp LC(LA(KP_NUMBER_0))      &kp UNDERSCORE  &trans  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &trans
+                &kp PERIOD       &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &kp TAB        &kp EQUAL                    &trans          &trans  &trans          &trans          &trans           &trans
+                &trans           &trans        &trans        &trans        &trans         &trans                       &trans          &trans                                                   &mkp MCLK
             >;
         };
 
+        /* FUNCTION レイヤー：例として既存キーに加え，下段右端のキーを SETTINGS レイヤー突入に変更 */
         function {
             bindings = <
-&kp DEL   &kp F7  &kp F8  &kp F9  &kp F10                      &trans  &trans          &msc SCRL_UP    &trans           &trans
-&kp HOME  &kp F4  &kp F5  &kp F6  &kp F11  &trans      &trans  &trans  &msc SCRL_LEFT  &msc SCRL_DOWN  &msc SCRL_RIGHT  &trans
-&kp ESC   &kp F1  &kp F2  &kp F3  &kp F12  &trans      &trans  &trans  &trans          &trans          &trans           &trans
-&trans    &trans  &trans  &trans  &trans   &trans      &trans  &trans                                                   &trans
+                &kp DEL   &kp F7  &kp F8  &kp F9  &kp F10                      &trans  &trans          &msc SCRL_UP    &trans           &trans
+                &kp HOME  &kp F4  &kp F5  &kp F6  &kp F11  &trans      &trans  &trans  &msc SCRL_LEFT  &msc SCRL_DOWN  &msc SCRL_RIGHT  &trans
+                &kp ESC   &kp F1  &kp F2  &kp F3  &kp F12  &trans      &trans  &trans  &trans          &trans          &trans           &trans
+                &trans    &trans  &trans    &trans    &trans   &trans      &trans  &to SETTINGS
             >;
-
             sensor-bindings = <&inc_dec_kp LC(PAGE_UP) LC(PAGE_DOWN)>;
         };
 
+        /* MOUSE レイヤー（クリック等の動作）—既存定義 */
         MOUSE {
             bindings = <
-&trans  &trans  &trans  &trans  &trans                      &trans  &trans    &trans    &trans    &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &mkp MB1  &mkp MB3  &mkp MB2  &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans    &trans    &trans    &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                                &trans
+                &trans  &trans  &trans  &trans  &trans                      &trans  &trans    &trans    &trans    &trans
+                &trans  &trans  &trans  &trans  &trans  &trans      &trans    &trans  &mkp MB1  &mkp MB3  &mkp MB2  &trans
+                &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans    &trans    &trans    &trans
+                &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                                &trans
             >;
         };
 
+        /* 縦スクロールモード：センサバインディングを MSC(SCRL_UP/DOWN) に変更＋右下キーでデフォルト（ポインタ）へ戻る */
         VERTICAL_SCROLL {
             bindings = <
-&trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                          &trans
+                &trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans  &trans  &trans
+                &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
+                &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
+                &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                          &to_layer_0
             >;
             sensor-bindings = <&inc_dec_kp MSC(SCRL_UP) MSC(SCRL_DOWN)>;
         };
 
+        /* 横スクロールモード：センサバインディングを MSC(SCRL_LEFT/RIGHT) に変更＋右下キーでデフォルトへ戻る */
+        HORIZONTAL_SCROLL {
+            bindings = <
+                &trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans  &trans  &trans
+                &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
+                &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
+                &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                          &to_layer_0
+            >;
+            sensor-bindings = <&inc_dec_kp MSC(SCRL_LEFT) MSC(SCRL_RIGHT)>;
+        };
+
+        /* SETTINGS レイヤー：ここでトラックボールのモード切替や速度変更を行う
+           （※以下は例として 1 行目に各機能キー、残りは未使用キーとして &trans を配置） */
+        SETTINGS {
+            bindings = <
+                /* Row0: 左から順に
+                   ①「ポインタモードへ」　②「縦スクロールモードへ」　③「横スクロールモードへ」
+                   ④「ポインタ速度 UP」　⑤「ポインタ速度 DOWN」
+                   ⑥「スクロール速度 UP」　⑦「スクロール速度 DOWN」　⑧「設定終了（デフォルトへ戻す）」
+                */
+                TO_POINTER,  TO_SCROLL_VERTICAL,  TO_SCROLL_HORIZONTAL,
+                inc_pointer_speed, dec_pointer_speed, inc_scroll_speed, dec_scroll_speed, &to_layer_0,
+                /* 以下、残りキーは未割当 */
+                &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans,
+                &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans,
+                &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans, &trans
+            >;
+        };
+
+        /* 既存 layer_6（BT 選択・ブートローダなど） */
         layer_6 {
             bindings = <
-&trans  &trans        &trans        &trans        &trans                           &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
-&trans  &trans        &trans        &trans        &trans  &trans      &trans       &trans        &trans        &trans        &trans        &trans
-&trans  &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &trans  &trans      &bootloader  &trans        &trans        &trans        &trans        &bt BT_CLR
-&trans  &trans        &trans        &trans        &trans  &trans      &trans       &trans                                                  &bt BT_CLR_ALL
+                &trans  &trans        &trans        &trans        &trans                           &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
+                &trans  &trans        &trans        &trans        &trans  &trans      &trans       &trans        &trans        &trans        &trans        &trans
+                &trans  &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &trans  &trans      &bootloader  &trans        &trans        &trans        &trans        &bt BT_CLR
+                &trans  &trans        &trans        &trans        &trans  &trans      &trans       &trans                                                  &bt BT_CLR_ALL
             >;
         };
     };
