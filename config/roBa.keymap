@@ -86,16 +86,18 @@
         };
 
         /* 追加：トラックボールスクロール有効用（押している間だけ）ビヘイビア */
-        mo_vertical_scroll: mo_vertical_scroll {
+                mo_vertical_scroll: mo_vertical_scroll {
             compatible = "zmk,behavior-momentary";
             label = "MOMENTARY_VERTICAL_SCROLL";
-            layer = <5>;  /* VERTICAL_SCROLL レイヤー（6番目のレイヤー） */
+            layer = <5>;  /* VERTICAL_SCROLL レイヤー */
+            #binding-cells = <0>;
         };
 
         mo_horizontal_scroll: mo_horizontal_scroll {
             compatible = "zmk,behavior-momentary";
             label = "MOMENTARY_HORIZONTAL_SCROLL";
-            layer = <6>;  /* HORIZONTAL_SCROLL レイヤー（7番目のレイヤー） */
+            layer = <6>;  /* HORIZONTAL_SCROLL レイヤー */
+            #binding-cells = <0>;
         };
     };
 
