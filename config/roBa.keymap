@@ -153,7 +153,7 @@
                 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
                 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                          &trans
             >;
-            sensor-bindings = <&inc_dec_kp MSC(SCRL_UP) MSC(SCRL_DOWN)>;
+            sensor-bindings = <&inc_dec_kp SCRL_UP SCRL_DOWN>;
         };
 
         /* 横スクロールモード：センサバインディングを MSC(SCRL_LEFT/RIGHT) に変更 */
@@ -164,7 +164,7 @@
                 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
                 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                          &trans
             >;
-            sensor-bindings = <&inc_dec_kp MSC(SCRL_LEFT) MSC(SCRL_RIGHT)>;
+            sensor-bindings = <&inc_dec_kp SCRL_LEFT SCRL_RIGHT>;
         };
 
         /* 既存 layer_6（BT 選択・ブートローダなど） */
