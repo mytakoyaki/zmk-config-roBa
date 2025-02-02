@@ -62,4 +62,10 @@
     };
 };
 
+/ {
+    pin-controller/spi2_default {
+        #binding-cells = <0>;
+    };
+};
+
 
