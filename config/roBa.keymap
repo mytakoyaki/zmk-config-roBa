@@ -14,7 +14,7 @@
 / {
     combos {
         compatible = "zmk,combos";
-        };
+        
 
         tab {
             bindings = <&kp TAB>;
