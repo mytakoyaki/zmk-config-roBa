@@ -1,4 +1,4 @@
-/ {
+
     // 重複しているインクルードは1つにまとめる
     #include <behaviors.dtsi>
     #include <dt-bindings/zmk/bt.h>
@@ -10,7 +10,7 @@
         flavor = "balanced";
         quick-tap-ms = <0>;
     };
-
+/ {
     combos {
         compatible = "zmk,combos";
 
