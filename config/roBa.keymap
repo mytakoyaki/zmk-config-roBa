@@ -108,7 +108,7 @@
 &to_layer_0 5  &to_layer_0 6  &kp LEFT_ALT  &lt_to_layer_0 2 TAB  &mt LCTRL SPACE  &lt_to_layer_0 3 LEFT_ALT      &lt 1 BACKSPACE  &mt LEFT_SHIFT ENTER                       &mkp LCLK
             >;
 
-            sensor-bindings = <&inc_dec_kp PAGE_UP PAGE_DOWN>;
+            sensor-bindings = <&inc_dec_kp ESC PAGE_DOWN>;
         };
 
         signal {
